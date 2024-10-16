@@ -23,10 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v=tzrc4w@qgac6h@2bljc93tmh65ueubtim5qy2j4r4b+eb#jj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 SERVE_MEDIA_IN_PROD = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://ps-voucher-app-production.up.railway.app/']
+CSRF_TRUSTED_ORIGINS = ['https://ps-voucher-app-production.up.railway.app/']
+
 
 
 # Application definition
