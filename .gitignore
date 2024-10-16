@@ -1,0 +1,46 @@
+# Python
+*.py[cod]
+__pycache__/
+*.so
+*.egg
+*.egg-info/
+.eggs/
+*.pyd
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+instance/
+.webassets-cache
+scrapy.sqlite
+
+# Environment variables
+.env
+env/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Other
+.idea/
+.vscode/
+*.iml
+*.sublime-project
+*.sublime-workspace
+.vscode/
+node_modules/
+.envrc
+*.env
+.coverage
+*.egg
+*.egg-info
+.eggs/
+htmlcov/

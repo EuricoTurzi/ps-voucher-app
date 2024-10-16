@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Vouchers{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Lista de Vouchers</h2>
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Motorista</th>
+                <th>Valor</th>
+                <th>Código</th>
+                <th>QR Code</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for voucher in vouchers %}
+            <tr>
+                <td>{{ voucher.motorista.nome }}</td>
+                <td>R$ {{ voucher.valor_restante }}</td>
+                <td>{{ voucher.codigo }}</td>
+                <td>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrCodeModal-{{ voucher.id }}">Ver QR Code</button>
+                </td>
+                <td>{{ voucher.status }}</td> <!-- Atualiza para mostrar o status correto -->
+                <td>
+                    <a class="btn btn-primary" href="{% url 'validar_voucher_view' %}">Validar</a>
+                </td>
+            </tr>
+            <!-- Modal -->
+            <div class="modal fade" id="qrCodeModal-{{ voucher.id }}" tabindex="-1" aria-labelledby="qrCodeModalLabel-{{ voucher.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="qrCodeModalLabel-{{ voucher.id }}">QR Code do Voucher</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="{{ voucher.qr_code.url }}" alt="QR Code" class="img-fluid">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

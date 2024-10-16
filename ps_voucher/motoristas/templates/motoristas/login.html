@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login Motorista{% endblock %}
+
+{% block content %}
+<style>
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.input-group-text {
+    background-color: #E9ECEF;
+    border-right: 0;
+}
+
+.input-group .form-control {
+    border-left: 0;
+}
+
+.btn-success {
+    background-color: #FFBD15;
+    border-color: #FFBD15;
+}
+
+.btn-success:hover{
+    background-color: #e2a918;
+    border-color: #e2a918;
+}
+</style>
+<div class="d-flex flex-column align-items-center justify-content-center vh-100">
+    <div class="card shadow-lg p-4" style="width: 350px; border-radius: 15px;">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="mb-3" style="width: 120px;">
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" name="{{ form.cpf.name }}" class="form-control" placeholder="Seu usuário" required id="id_cpf">
+                </div>
+                <div class="mb-3 input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="{{ form.senha.name }}" class="form-control" placeholder="Sua senha" required id="id_senha">
+                </div>
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-success btn-block">ENTRAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

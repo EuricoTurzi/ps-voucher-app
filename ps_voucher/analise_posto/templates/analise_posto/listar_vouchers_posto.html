@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Vouchers do Posto{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Vouchers do Posto {{ posto.nome }}</h2>
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Motorista</th>
+                        <th>Valor Restante</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voucher in vouchers %}
+                    <tr>
+                        <td>{{ voucher.codigo }}</td>
+                        <td>{{ voucher.motorista.nome }}</td>
+                        <td>R$ {{ voucher.valor_restante }}</td>
+                        <td>{{ voucher.status }}</td>
+                        <td>
+                            <a href="{% url 'registrar_gasto' voucher.id %}" class="btn btn-primary btn-sm">Registrar Gasto</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

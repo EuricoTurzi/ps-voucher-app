@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastrar Motorista{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Cadastrar Motorista</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_nome" class="form-label">Nome</label>
+                    {{ form.nome }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_cpf" class="form-label">CPF</label>
+                    {{ form.cpf }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_placa_veiculo" class="form-label">Placa do Veículo</label>
+                    {{ form.placa_veiculo }}
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

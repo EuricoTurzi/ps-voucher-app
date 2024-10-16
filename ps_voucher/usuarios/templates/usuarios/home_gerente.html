@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home Gerente{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Bem-vindo, {{ request.user.username }}</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Seus Postos</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Endereço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for posto in postos %}
+                    <tr>
+                        <td>{{ posto.nome }}</td>
+                        <td>{{ posto.endereco }}</td>
+                        <td>
+                            <a href="{% url 'analise_posto' posto.id %}" class="btn btn-info btn-sm">Analisar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Escanear Voucher{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Escanear Voucher - {{ voucher.codigo }}</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body text-center">
+            <video id="preview" style="width: 100%; height: auto;"></video>
+            <div class="d-grid mt-3">
+                <button id="scan-button" class="btn btn-primary btn-block">Escanear</button>
+            </div>
+            <div id="message-area" class="mt-3"></div>  <!-- Área para a mensagem de confirmação -->
+        </div>
+    </div>
+</div>
+
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script>
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    scanner.addListener('scan', function(content) {
+        fetch(`/analise_posto/validar_qrcode/${content}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('message-area').innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                    setTimeout(() => { window.location.href = "{% url 'listar_vouchers_posto' voucher.rota.postos.first.id %}"; }, 2000);  // Redireciona após 2 segundos
+                } else {
+                    document.getElementById('message-area').innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                }
+            });
+    });
+
+    document.getElementById('scan-button').addEventListener('click', () => {
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function (e) {
+            console.error(e);
+        });
+    });
+</script>
+{% endblock %}

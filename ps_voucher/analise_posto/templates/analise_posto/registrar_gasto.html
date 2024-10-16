@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registrar Gasto{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Registrar Gasto - Voucher {{ voucher.codigo }}</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Registrar Gasto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

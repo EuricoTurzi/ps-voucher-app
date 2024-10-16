@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home Motorista{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2>Bem-vindo, {{ motorista.nome }}</h2>
+    </div>
+    {% if vouchers %}
+        <h3 class="mb-4">Seus Vouchers:</h3>
+        <div class="row">
+            {% for voucher in vouchers %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Código: {{ voucher.codigo }}</h5>
+                        <p class="card-text">
+                            <img src="{{ voucher.qr_code.url }}" alt="QR Code" class="img-fluid mb-3">
+                        </p>
+                        <p class="card-text">Valor: R$ {{ voucher.valor_restante }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">Você não possui vouchers disponíveis no momento.</p>
+    {% endif %}
+</div>
+{% endblock %}

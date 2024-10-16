@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Motoristas{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4" style="width: 90%; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Lista de Motoristas</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Placa do Veículo</th>
+                        <th>Senha (temporário)</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for motorista, senha in motoristas_com_senhas %}
+                    <tr>
+                        <td>{{ motorista.nome }}</td>
+                        <td>{{ motorista.cpf }}</td>
+                        <td>{{ motorista.placa_veiculo }}</td>
+                        <td id="senha-{{ motorista.cpf }}">{{ senha }}</td> <!-- Senha temporária para testes -->
+                        <td>
+                            <button class="btn btn-secondary" onclick="gerarNovaSenha('{{ motorista.cpf }}')">Gerar Nova Senha</button>
+                            <a href="{% url 'deletar_motorista' motorista.cpf %}" class="btn btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function gerarNovaSenha(cpf) {
+    fetch(`/motoristas/gerar_senha/${cpf}/`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Erro: ' + data.error);
+        } else {
+            document.getElementById(`senha-${cpf}`).textContent = data.senha;
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+}
+</script>
+{% endblock %}

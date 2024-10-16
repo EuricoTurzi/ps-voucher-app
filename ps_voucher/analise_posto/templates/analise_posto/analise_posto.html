@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Análise do Posto{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Análise do Posto {{ posto.nome }}</h2>
+    <div class="card shadow-lg p-4">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Dados do Posto</h3>
+            <p><strong>Nome:</strong> {{ posto.nome }}</p>
+            <p><strong>Endereço:</strong> {{ posto.endereco }}</p>
+            <p><strong>Cidade:</strong> {{ posto.cidade }}</p>
+            <p><strong>Estado:</strong> {{ posto.estado }}</p>
+            <hr>
+            <h3 class="card-title mb-4">Vouchers Utilizados</h3>
+            <p><strong>Total de Vouchers:</strong> {{ total_vouchers }}</p>
+            <p><strong>Valor Total Utilizado:</strong> R$ {{ valor_total_utilizado }}</p>
+            <hr>
+            <a href="{% url 'listar_vouchers_posto' posto.id %}" class="btn btn-info">Ver Vouchers</a> <!-- Adicionar botão para ver vouchers -->
+        </div>
+    </div>
+</div>
+{% endblock %}

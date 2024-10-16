@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Home</h2>
+    {% if section == 'gerente' %}
+        <div class="alert alert-info">Bem-vindo, Gerente!</div>
+        <!-- Conteúdo específico para Gerente -->
+    {% elif section == 'pa' %}
+        <div class="alert alert-info">Bem-vindo, PA!</div>
+        <!-- Conteúdo específico para PA -->
+    {% elif section == 'administrador' %}
+        <div class="alert alert-info">Bem-vindo, Administrador!</div>
+        <!-- Conteúdo específico para Administrador -->
+    {% else %}
+        <div class="alert alert-info">Bem-vindo, Usuário!</div>
+        <!-- Conteúdo específico para Usuário Padrão -->
+    {% endif %}
+</div>
+{% endblock %}

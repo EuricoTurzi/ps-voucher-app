@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Validar Voucher{% endblock %}
+
+{% block content %}
+<style>
+    #preview {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+    }
+
+    #feedback {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+</style>
+
+<video id="preview"></video>
+<div id="feedback" class="alert" role="alert" style="display:none;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('preview');
+    const feedback = document.getElementById('feedback');
+    let isProcessing = false;
+
+    function startVideo() {
+        navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment'
+            }
+        }).then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+            requestAnimationFrame(tick);
+        }).catch(function(error) {
+            console.error('Erro ao acessar a câmera: ', error);
+            feedback.className = 'alert alert-danger';
+            feedback.textContent = 'Erro ao acessar a câmera. Por favor, verifique as permissões.';
+            feedback.style.display = 'block';
+        });
+    }
+
+    function tick() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA && !isProcessing) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert",
+            });
+            if (code) {
+                isProcessing = true;
+                video.pause();
+                const voucherCode = code.data;
+                validateVoucher(voucherCode);
+            }
+        }
+        if (!isProcessing) {
+            requestAnimationFrame(tick);
+        }
+    }
+
+    function validateVoucher(voucherCode) {
+        fetch(`/vouchers/validar/${voucherCode}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                feedback.className = 'alert alert-success';
+                feedback.textContent = 'Voucher validado com sucesso!';
+                feedback.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = '/vouchers/';
+                }, 2000);
+            } else {
+                feedback.className = 'alert alert-danger';
+                feedback.textContent = 'Erro ao validar voucher: ' + data.message;
+                feedback.style.display = 'block';
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                    video.play();
+                    isProcessing = false;
+                }, 2000);
+            }
+        })
+        .catch(error => {
+            feedback.className = 'alert alert-danger';
+            feedback.textContent = 'Erro: ' + error;
+            feedback.style.display = 'block';
+            setTimeout(() => {
+                feedback.style.display = 'none';
+                video.play();
+                isProcessing = false;
+            }, 2000);
+        });
+    }
+
+    startVideo();
+});
+</script>
+{% endblock %}

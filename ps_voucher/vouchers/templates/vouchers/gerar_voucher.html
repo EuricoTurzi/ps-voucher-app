@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gerar Voucher{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Gerar Voucher</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_motorista" class="form-label">Motorista</label>
+                    {{ form.motorista }}
+                </div>
+                <div class="mb-3">
+                    <label for="id_rota" class="form-label">Rota</label>
+                    {{ form.rota }}
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-block">Gerar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
