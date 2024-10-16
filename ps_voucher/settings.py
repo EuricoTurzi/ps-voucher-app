@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-v=tzrc4w@qgac6h@2bljc93tmh65ueubtim5qy2j4r4b+eb#jj
 DEBUG = True
 SERVE_MEDIA_IN_PROD = True
 
-ALLOWED_HOSTS = ['https://ps-voucher-app-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://ps-voucher-app-production.up.railway.app']
+ALLOWED_HOSTS = ['ps-voucher-app-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['ps-voucher-app-production.up.railway.app']
 
 
 
