@@ -27,7 +27,7 @@ DEBUG = True
 SERVE_MEDIA_IN_PROD = True
 
 ALLOWED_HOSTS = ['ps-voucher-app-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['ps-voucher-app-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://ps-voucher-app-production.up.railway.app']
 
 
 
