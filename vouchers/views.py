@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from usuarios.decorators import group_required
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse  # Adicione esta linha
 from .models import Voucher
 from .forms import VoucherForm
 
+@login_required
+@group_required('Administrador')
 def gerar_voucher(request):
     if request.method == 'POST':
         form = VoucherForm(request.POST)
@@ -15,10 +19,14 @@ def gerar_voucher(request):
         form = VoucherForm()
     return render(request, 'vouchers/gerar_voucher.html', {'form': form})
 
+@login_required
+@group_required('Administrador', 'PA')
 def listar_vouchers(request):
     vouchers = Voucher.objects.all()
     return render(request, 'vouchers/listar_vouchers.html', {'vouchers': vouchers})
 
+@login_required
+@group_required('PA')
 def validar_voucher(request, codigo):
     voucher = get_object_or_404(Voucher, codigo=codigo)
     if request.method == 'GET':
@@ -31,5 +39,7 @@ def validar_voucher(request, codigo):
     else:
         return JsonResponse({'status': 'error', 'message': 'Método não permitido.'}, status=405)
 
+@login_required
+@group_required('PA')
 def validar_qrcode_view(request):
     return render(request, 'vouchers/validar_voucher.html')

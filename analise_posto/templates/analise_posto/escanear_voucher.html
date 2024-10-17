@@ -4,12 +4,76 @@
 {% block title %}Escanear Voucher{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Escanear Voucher - {{ voucher.codigo }}</h2>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%;
+    width: 100%;
+    max-width: 600px;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+#preview {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+
+.scan-theme {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5 animated fadeIn">
     <div class="card shadow-lg p-4">
         <div class="card-body text-center">
-            <video id="preview" style="width: 100%; height: auto;"></video>
-            <div class="d-grid mt-3">
+            <h3 class="card-title mb-4">Escanear Voucher - {{ voucher.codigo }}</h3>
+            <video id="preview"></video>
+            <div class="scan-theme mt-3">Posicione o QR Code dentro da área de visualização para escanear.</div>
+            <div class="d-grid mt-4">
                 <button id="scan-button" class="btn btn-primary btn-block">Escanear</button>
             </div>
             <div id="message-area" class="mt-3"></div>  <!-- Área para a mensagem de confirmação -->
@@ -19,30 +83,33 @@
 
 <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 <script>
-    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-    scanner.addListener('scan', function(content) {
-        fetch(`/analise_posto/validar_qrcode/${content}/`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    document.getElementById('message-area').innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-                    setTimeout(() => { window.location.href = "{% url 'listar_vouchers_posto' voucher.rota.postos.first.id %}"; }, 2000);  // Redireciona após 2 segundos
-                } else {
-                    document.getElementById('message-area').innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
-                }
-            });
-    });
-
-    document.getElementById('scan-button').addEventListener('click', () => {
-        Instascan.Camera.getCameras().then(function (cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
+let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+scanner.addListener('scan', function(content) {
+    fetch(`/analise_posto/validar_qrcode/${content}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('message-area').innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                setTimeout(() => { window.location.href = "{% url 'listar_vouchers_posto' voucher.rota.postos.first.id %}"; }, 2000);  // Redireciona após 2 segundos
             } else {
-                console.error('No cameras found.');
+                document.getElementById('message-area').innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
             }
-        }).catch(function (e) {
-            console.error(e);
         });
+});
+
+document.getElementById('scan-button').addEventListener('click', () => {
+    Instascan.Camera.getCameras().then(function(cameras) {
+        let rearCamera = cameras.find(camera => camera.name.toLowerCase().includes('back'));
+        if (rearCamera) {
+            scanner.start(rearCamera);
+        } else if (cameras.length > 0) {
+            scanner.start(cameras[0]);
+        } else {
+            console.error('No cameras found.');
+        }
+    }).catch(function(e) {
+        console.error(e);
     });
+});
 </script>
 {% endblock %}

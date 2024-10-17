@@ -26,10 +26,8 @@ SECRET_KEY = 'django-insecure-v=tzrc4w@qgac6h@2bljc93tmh65ueubtim5qy2j4r4b+eb#jj
 DEBUG = True
 SERVE_MEDIA_IN_PROD = True
 
-ALLOWED_HOSTS = ['parada-segura.up.railway.app']
+ALLOWED_HOSTS = ['parada-segura.up.railway.app', '*']
 CSRF_TRUSTED_ORIGINS = ['https://parada-segura.up.railway.app']
-
-
 
 # Application definition
 
@@ -139,10 +137,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Remova ou comente as linhas relacionadas a HTTPS
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
-
-
+# Redirecionar para a página de login personalizada
+LOGIN_URL = '/usuarios/login/'

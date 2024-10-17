@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from usuarios.decorators import group_required
 from django.http import JsonResponse
 from .forms import RegistrarGastoForm
 from .models import GastoVoucher
@@ -11,6 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 @login_required
+@group_required('Gerente')
 def analise_posto(request, posto_id):
     posto = get_object_or_404(Posto, id=posto_id)
 
@@ -31,6 +33,7 @@ def analise_posto(request, posto_id):
     return render(request, 'analise_posto/analise_posto.html', context)
 
 @login_required
+@group_required('Gerente')
 def listar_vouchers_posto(request, posto_id):
     posto = get_object_or_404(Posto, id=posto_id)
     
@@ -48,6 +51,7 @@ def listar_vouchers_posto(request, posto_id):
     return render(request, 'analise_posto/listar_vouchers_posto.html', context)
 
 @login_required
+@group_required('Gerente')
 def registrar_gasto(request, voucher_id):
     voucher = get_object_or_404(Voucher, id=voucher_id)
 
@@ -64,6 +68,7 @@ def registrar_gasto(request, voucher_id):
     return render(request, 'analise_posto/registrar_gasto.html', {'form': form, 'voucher': voucher})
 
 @login_required
+@group_required('Gerente')
 def escanear_voucher(request, voucher_id):
     voucher = get_object_or_404(Voucher, id=voucher_id)
     valor_gasto = request.session.get('valor_gasto')
@@ -75,6 +80,7 @@ def escanear_voucher(request, voucher_id):
     return render(request, 'analise_posto/escanear_voucher.html', {'voucher': voucher, 'valor_gasto': valor_gasto})
 
 @login_required
+@group_required('Gerente')
 def validar_qrcode(request, qrcode):
     voucher = get_object_or_404(Voucher, codigo=qrcode)
     valor_gasto = request.session.get('valor_gasto')
@@ -107,51 +113,3 @@ def validar_qrcode(request, qrcode):
     else:
         logger.error(f"Erro na validação do QR Code: QR Code inválido ou valor excede o restante do voucher.")
         return JsonResponse({'status': 'error', 'message': 'QR Code inválido ou valor excede o restante do voucher.'})
-
-@login_required
-def registrar_gasto_direto(request, voucher_id):
-    voucher = get_object_or_404(Voucher, id=voucher_id)
-    gerente = request.user
-
-    # Verificar se o gerente é responsável pelo posto específico
-    postos_gerente = Posto.objects.filter(gerente=gerente)
-
-    if not postos_gerente.exists():
-        return redirect('listar_vouchers_posto', posto_id=postos_gerente.first().id)
-
-    if request.method == 'POST':
-        form = RegistrarGastoForm(request.POST)
-        if form.is_valid():
-            valor_gasto = form.cleaned_data['valor_gasto']
-            valor_gasto = Decimal(valor_gasto)
-
-            print(f"Tentando registrar gasto: Voucher = {voucher.codigo}, Valor Gasto = {valor_gasto}, Valor Restante Antes = {voucher.valor_restante}")
-
-            if voucher.status == 'Ativo' and voucher.valor_restante >= valor_gasto:
-                voucher.valor_restante -= valor_gasto
-                print(f"Novo Valor Restante (Antes de Salvar) = {voucher.valor_restante}")
-                if voucher.valor_restante == 0:
-                    voucher.status = 'Usado'
-                else:
-                    voucher.status = 'Ativo'
-                voucher.save(update_fields=['valor_restante', 'status'])
-                
-                # Registrar o gasto no posto
-                for posto in postos_gerente:
-                    GastoVoucher.objects.create(voucher=voucher, posto=posto, valor_gasto=valor_gasto)
-
-                voucher.refresh_from_db()
-                print(f"Voucher atualizado: Novo Valor Restante (Após Salvar) = {voucher.valor_restante}, Novo Status = {voucher.status}")
-                return redirect('listar_vouchers_posto', posto_id=postos_gerente.first().id)
-            else:
-                print(f"Erro ao validar o voucher: Valor Gasto = {valor_gasto}, Valor Restante = {voucher.valor_restante}")
-                return redirect('listar_vouchers_posto', posto_id=postos_gerente.first().id)
-
-    else:
-        form = RegistrarGastoForm()
-    
-    return render(request, 'analise_posto/registrar_gasto_direto.html', {'form': form, 'voucher': voucher})
-
-@login_required
-def confirmacao(request):
-    return render(request, 'analise_posto/confirmacao.html')

@@ -4,40 +4,86 @@
 {% block title %}Lista de Postos{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Lista de Postos</h2>
-    <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th>Nome</th>
-                <th>Endereço</th>
-                <th>Cidade</th>
-                <th>Estado</th>
-                <th>Gerente</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for posto in postos %}
-            <tr>
-                <td>{{ posto.nome }}</td>
-                <td>{{ posto.endereco }}</td>
-                <td>{{ posto.cidade }}</td>
-                <td>{{ posto.estado }}</td>
-                <td>
-                    {% if posto.gerente %}
-                        {{ posto.gerente.username }}
-                    {% else %}
-                        Nenhum
-                    {% endif %}
-                </td>
-                <td>
-                    <a href="{% url 'editar_posto' posto.id %}" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="{% url 'deletar_posto' posto.id %}" class="btn btn-danger btn-sm">Excluir</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4 animated fadeIn" style="width: 100%; max-width: 1000px; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Lista de Postos</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Endereço</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                            <th>Gerente</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for posto in postos %}
+                        <tr>
+                            <td>{{ posto.nome }}</td>
+                            <td>{{ posto.endereco }}</td>
+                            <td>{{ posto.cidade }}</td>
+                            <td>{{ posto.estado }}</td>
+                            <td>
+                                {% if posto.gerente %}
+                                    {{ posto.gerente.username }}
+                                {% else %}
+                                    Nenhum
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'editar_posto' posto.id %}" class="btn btn-warning btn-sm">Editar</a>
+                                <a href="{% url 'deletar_posto' posto.id %}" class="btn btn-danger btn-sm">Excluir</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

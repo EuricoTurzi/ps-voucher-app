@@ -4,8 +4,60 @@
 {% block title %}Gerar Voucher{% endblock %}
 
 {% block content %}
-<div class="d-flex flex-column align-items-center justify-content-center mt-5">
-    <div class="card shadow-lg p-4" style="width: 400px; border-radius: 15px;">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%; 
+    width: 100%; 
+    max-width: 400px; 
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5 animated fadeIn">
+    <div class="card shadow-lg p-4">
         <div class="card-body">
             <h3 class="card-title text-center mb-4">Gerar Voucher</h3>
             <form method="post">

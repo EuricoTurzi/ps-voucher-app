@@ -11,11 +11,11 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: #f8f9fa;
+            color: white;
         }
         .container {
             text-align: center;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.8);
             padding: 40px;
             border-radius: 10px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
@@ -28,16 +28,32 @@
         h1 {
             font-size: 2.5rem;
             margin-bottom: 20px;
+            color: #333;
         }
         .subtitle {
             font-size: 1.2rem;
             margin-bottom: 30px;
-            color: #666666;
+            color: #555;
+        }
+        .animated {
+            animation-duration: 1s;
+            animation-fill-mode: both;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .fadeIn {
+            animation-name: fadeIn;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container animated fadeIn">
         <h1>Bem-vindo ao Parada Segura</h1>
         <p class="subtitle">O sistema de vouchers para uma viagem segura.</p>
         <div class="row">

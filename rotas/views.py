@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from usuarios.decorators import group_required
+from django.contrib.auth.decorators import login_required
 from .models import Rota
 from .forms import RotaForm
 
+@login_required
+@group_required('Administrador')
 def cadastrar_rota(request):
     if request.method == 'POST':
         form = RotaForm(request.POST)
@@ -16,10 +20,14 @@ def cadastrar_rota(request):
         form = RotaForm()
     return render(request, 'rotas/cadastrar_rota.html', {'form': form})
 
+@login_required
+@group_required('Administrador')
 def listar_rotas(request):
     rotas = Rota.objects.all()
     return render(request, 'rotas/listar_rotas.html', {'rotas': rotas})
 
+@login_required
+@group_required('Administrador')
 def editar_rota(request, rota_id):
     rota = get_object_or_404(Rota, id=rota_id)
     if request.method == 'POST':
@@ -35,6 +43,8 @@ def editar_rota(request, rota_id):
         form = RotaForm(instance=rota)
     return render(request, 'rotas/cadastrar_rota.html', {'form': form})
 
+@login_required
+@group_required('Administrador')
 def deletar_rota(request, rota_id):
     rota = get_object_or_404(Rota, id=rota_id)
     rota.delete()

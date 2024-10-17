@@ -9,6 +9,13 @@
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 10rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .input-group-text {
@@ -25,16 +32,29 @@
     border-color: #FFBD15;
 }
 
-.btn-success:hover{
+.btn-success:hover {
     background-color: #e2a918;
     border-color: #e2a918;
 }
+
+h3 {
+    color: #E2A918;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
 </style>
-<div class="d-flex flex-column align-items-center justify-content-center vh-100">
-    <div class="card shadow-lg p-4" style="width: 350px; border-radius: 15px;">
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="card shadow-lg p-4 animated fadeIn" style="max-width: 100%; width: 100%; max-width: 350px;">
         <div class="card-body">
             <div class="text-center mb-4">
                 <img src="{% static 'images/logo.png' %}" alt="Logo" class="mb-3" style="width: 120px;">
+                <h3>Login Motorista</h3>
             </div>
             <form method="post">
                 {% csrf_token %}

@@ -4,7 +4,58 @@
 {% block title %}Análise do Posto{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+.chart-container {
+    width: 100%;
+    height: 400px;
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
+</style>
+
+<div class="container mt-5 animated fadeIn">
     <h2 class="text-center mb-4">Análise do Posto {{ posto.nome }}</h2>
     <div class="card shadow-lg p-4">
         <div class="card-body">
@@ -17,9 +68,39 @@
             <h3 class="card-title mb-4">Vouchers Utilizados</h3>
             <p><strong>Total de Vouchers:</strong> {{ total_vouchers }}</p>
             <p><strong>Valor Total Utilizado:</strong> R$ {{ valor_total_utilizado }}</p>
+            <div id="chartContainer" class="chart-container">
+                <canvas id="postoChart"></canvas>
+            </div>
             <hr>
-            <a href="{% url 'listar_vouchers_posto' posto.id %}" class="btn btn-info">Ver Vouchers</a> <!-- Adicionar botão para ver vouchers -->
+            <a href="{% url 'listar_vouchers_posto' posto.id %}" class="btn btn-info">Ver Vouchers</a>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const ctx = document.getElementById('postoChart').getContext('2d');
+    const postoChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total de Vouchers', 'Valor Total Utilizado'],
+            datasets: [{
+                label: 'Estatísticas do Posto',
+                data: [{{ total_vouchers }}, {{ valor_total_utilizado }}],
+                backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

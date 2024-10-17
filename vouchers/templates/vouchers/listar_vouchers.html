@@ -1,55 +1,125 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load voucher_tags %}
 
 {% block title %}Lista de Vouchers{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Lista de Vouchers</h2>
-    <table class="table table-hover">
-        <thead class="thead-light">
-            <tr>
-                <th>Motorista</th>
-                <th>Valor</th>
-                <th>Código</th>
-                <th>QR Code</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for voucher in vouchers %}
-            <tr>
-                <td>{{ voucher.motorista.nome }}</td>
-                <td>R$ {{ voucher.valor_restante }}</td>
-                <td>{{ voucher.codigo }}</td>
-                <td>
-                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrCodeModal-{{ voucher.id }}">Ver QR Code</button>
-                </td>
-                <td>{{ voucher.status }}</td> <!-- Atualiza para mostrar o status correto -->
-                <td>
-                    <a class="btn btn-primary" href="{% url 'validar_voucher_view' %}">Validar</a>
-                </td>
-            </tr>
-            <!-- Modal -->
-            <div class="modal fade" id="qrCodeModal-{{ voucher.id }}" tabindex="-1" aria-labelledby="qrCodeModalLabel-{{ voucher.id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="qrCodeModalLabel-{{ voucher.id }}">QR Code do Voucher</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+
+.modal-header, .modal-body, .modal-footer {
+    border: none;
+    text-align: center;
+}
+
+.modal-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.btn-info, .btn-primary {
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-info:hover, .btn-primary:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+    .table th, .table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 1rem;
+    }
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4" style="width: 100%; max-width: 1000px; border-radius: 15px;">
+        <div class="card-body">
+            <h3 class="card-title text-center mb-4">Lista de Vouchers</h3>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Motorista</th>
+                            <th>Valor</th>
+                            <th>Código</th>
+                            <th>QR Code</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for voucher in vouchers %}
+                        <tr>
+                            <td>{{ voucher.motorista.nome }}</td>
+                            <td>R$ {{ voucher.valor_restante }}</td>
+                            <td>{{ voucher.codigo }}</td>
+                            <td>
+                                {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
+                                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrCodeModal-{{ voucher.id }}">Ver QR Code</button>
+                                {% endif %}
+                            </td>
+                            <td>{{ voucher.status }}</td>
+                            <td>
+                                {% if request.user.is_superuser or request.user|has_group:"PA" %}
+                                    <a class="btn btn-primary" href="{% url 'validar_voucher_view' %}">Validar</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
+                        <div class="modal fade" id="qrCodeModal-{{ voucher.id }}" tabindex="-1" aria-labelledby="qrCodeModalLabel-{{ voucher.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="qrCodeModalLabel-{{ voucher.id }}">QR Code do Voucher</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ voucher.qr_code.url }}" alt="QR Code" class="img-fluid">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-body text-center">
-                            <img src="{{ voucher.qr_code.url }}" alt="QR Code" class="img-fluid">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        </div>
-                    </div>
-                </div>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            {% endfor %}
-        </tbody>
-    </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

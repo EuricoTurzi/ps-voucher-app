@@ -7,6 +7,4 @@ urlpatterns = [
     path('registrar_gasto/<int:voucher_id>/', views.registrar_gasto, name='registrar_gasto'),
     path('escanear_voucher/<int:voucher_id>/', views.escanear_voucher, name='escanear_voucher'),
     path('validar_qrcode/<str:qrcode>/', views.validar_qrcode, name='validar_qrcode'),
-    path('confirmacao/', views.confirmacao, name='confirmacao'),
-    path('registrar_gasto_direto/<int:voucher_id>/', views.registrar_gasto_direto, name='registrar_gasto_direto'),
 ]

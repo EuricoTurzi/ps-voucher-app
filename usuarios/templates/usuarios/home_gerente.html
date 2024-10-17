@@ -4,31 +4,76 @@
 {% block title %}Home Gerente{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Bem-vindo, {{ request.user.username }}</h2>
-    <div class="card shadow-lg p-4">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4 animated fadeIn" style="width: 100%; max-width: 1000px; border-radius: 15px;">
         <div class="card-body">
-            <h3 class="card-title mb-4">Seus Postos</h3>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Endereço</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for posto in postos %}
-                    <tr>
-                        <td>{{ posto.nome }}</td>
-                        <td>{{ posto.endereco }}</td>
-                        <td>
-                            <a href="{% url 'analise_posto' posto.id %}" class="btn btn-info btn-sm">Analisar</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <h3 class="card-title text-center mb-4">Bem-vindo, {{ request.user.username }}</h3>
+            <h4 class="mb-4">Seus Postos</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Endereço</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for posto in postos %}
+                        <tr>
+                            <td>{{ posto.nome }}</td>
+                            <td>{{ posto.endereco }}</td>
+                            <td>
+                                <a href="{% url 'analise_posto' posto.id %}" class="btn btn-info btn-sm">Analisar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

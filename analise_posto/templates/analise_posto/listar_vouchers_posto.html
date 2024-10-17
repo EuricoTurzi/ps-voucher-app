@@ -4,41 +4,86 @@
 {% block title %}Vouchers do Posto{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Vouchers do Posto {{ posto.nome }}</h2>
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
-    <div class="card shadow-lg p-4">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center mt-5">
+    <div class="card shadow-lg p-4 animated fadeIn" style="width: 100%; max-width: 1000px; border-radius: 15px;">
         <div class="card-body">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Código</th>
-                        <th>Motorista</th>
-                        <th>Valor Restante</th>
-                        <th>Status</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for voucher in vouchers %}
-                    <tr>
-                        <td>{{ voucher.codigo }}</td>
-                        <td>{{ voucher.motorista.nome }}</td>
-                        <td>R$ {{ voucher.valor_restante }}</td>
-                        <td>{{ voucher.status }}</td>
-                        <td>
-                            <a href="{% url 'registrar_gasto' voucher.id %}" class="btn btn-primary btn-sm">Registrar Gasto</a>
-                        </td>
-                    </tr>
+            <h3 class="card-title text-center mb-4">Vouchers do Posto {{ posto.nome }}</h3>
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        {{ message }}
                     {% endfor %}
-                </tbody>
-            </table>
+                </div>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Motorista</th>
+                            <th>Valor Restante</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for voucher in vouchers %}
+                        <tr>
+                            <td>{{ voucher.codigo }}</td>
+                            <td>{{ voucher.motorista.nome }}</td>
+                            <td>R$ {{ voucher.valor_restante }}</td>
+                            <td>{{ voucher.status }}</td>
+                            <td>
+                                <a href="{% url 'registrar_gasto' voucher.id %}" class="btn btn-primary btn-sm">Registrar Gasto</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
