@@ -36,7 +36,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if user.is_authenticated %}
-                            {% if user.is_superuser or user|has_group:"Administrador" %}
+                            {% if user.is_superuser or user|has_group:"Administrador" or user|has_group:"RMO" %}
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="motoristasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Motoristas
@@ -47,13 +47,13 @@
                                     </ul>
                                 </li>
                             {% endif %}
-                            {% if user.is_superuser or user|has_group:"Administrador" or user|has_group:"PA" %}
+                            {% if user.is_superuser or user|has_group:"Administrador" or user|has_group:"PA" or user|has_group:"RMO" %}
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="vouchersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         Vouchers
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="vouchersDropdown">
-                                        {% if user.is_superuser or user|has_group:"Administrador" %}
+                                        {% if user.is_superuser or user|has_group:"Administrador" or user|has_group:"RMO"%}
                                             <li><a class="dropdown-item" href="{% url 'gerar_voucher' %}">Gerar Voucher</a></li>
                                         {% endif %}
                                         <li><a class="dropdown-item" href="{% url 'listar_vouchers' %}">Listar Vouchers</a></li>

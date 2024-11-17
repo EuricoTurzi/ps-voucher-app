@@ -6,7 +6,7 @@ from .models import Voucher
 from .forms import VoucherForm
 
 @login_required
-@group_required('Administrador')
+@group_required('Administrador','RMO')
 def gerar_voucher(request):
     if request.method == 'POST':
         form = VoucherForm(request.POST)
@@ -21,7 +21,7 @@ def gerar_voucher(request):
     return render(request, 'vouchers/gerar_voucher.html', {'form': form})
 
 @login_required
-@group_required('Administrador', 'PA')
+@group_required('Administrador', 'PA', 'RMO')
 def listar_vouchers(request):
     if request.user.groups.filter(name='PA').exists():  # Verifica se o usuário está no grupo PA
         vouchers = Voucher.objects.filter(status='Pendente')

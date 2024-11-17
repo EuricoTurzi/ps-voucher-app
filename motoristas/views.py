@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 motorista_senhas = {}
 
 @login_required
-@group_required('Administrador')
+@group_required('Administrador', 'RMO')
 def cadastrar_motorista(request):
     if request.method == 'POST':
         form = MotoristaForm(request.POST)
@@ -32,7 +32,7 @@ def cadastrar_motorista(request):
     return render(request, 'motoristas/cadastrar_motorista.html', {'form': form})
 
 @login_required
-@group_required('Administrador')
+@group_required('Administrador', 'RMO')
 def listar_motoristas(request):
     motoristas = Motorista.objects.all()
     motoristas_com_senhas = [(motorista, motorista_senhas.get(motorista.cpf, '')) for motorista in motoristas]
@@ -65,7 +65,7 @@ def logout_view(request):
     return redirect('home')
 
 @login_required
-@group_required('Administrador')
+@group_required('Administrador', 'RMO')
 def gerar_senha_temporaria(request, cpf):
     senha = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
     motorista = Motorista.objects.get(cpf=cpf)
