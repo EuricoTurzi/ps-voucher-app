@@ -12,7 +12,8 @@ def gerar_voucher(request):
         form = VoucherForm(request.POST)
         if form.is_valid():
             voucher = form.save(commit=False)
-            voucher.valor_restante = voucher.rota.valor_total  # Define o valor restante baseado na rota
+            voucher.valor_restante = 40  # Define o valor restante baseado na rota
+            voucher.criado_por = request.user  # Define o usuário que criou o voucher
             voucher.save()
             return redirect('listar_vouchers')
     else:
@@ -22,7 +23,14 @@ def gerar_voucher(request):
 @login_required
 @group_required('Administrador', 'PA')
 def listar_vouchers(request):
-    vouchers = Voucher.objects.all()
+    if request.user.groups.filter(name='PA').exists():  # Verifica se o usuário está no grupo PA
+        vouchers = Voucher.objects.filter(status='Pendente')
+    else:
+        vouchers = Voucher.objects.all()
+        for voucher in vouchers:
+            if voucher.is_expired() and voucher.status != 'Expirado':
+                voucher.status = 'Expirado'
+                voucher.save()
     return render(request, 'vouchers/listar_vouchers.html', {'vouchers': vouchers})
 
 @login_required
@@ -30,6 +38,10 @@ def listar_vouchers(request):
 def validar_voucher(request, codigo):
     voucher = get_object_or_404(Voucher, codigo=codigo)
     if request.method == 'GET':
+        if voucher.is_expired():
+            voucher.status = 'Expirado'
+            voucher.save()
+            return JsonResponse({'status': 'error', 'message': 'O voucher expirou e não pode ser utilizado.'})
         if voucher.status == 'Usado':
             return JsonResponse({'status': 'error', 'message': 'Este voucher já foi utilizado.'})
         else:

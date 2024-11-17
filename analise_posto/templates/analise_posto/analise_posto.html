@@ -5,6 +5,7 @@
 
 {% block content %}
 <style>
+/* Estilos gerais */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f8f9fa;
@@ -12,40 +13,45 @@ body {
     padding: 0;
 }
 
+.container {
+    max-width: 800px;
+}
+
 .card {
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    padding: 20px;
 }
 
 .card:hover {
-    transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.animated {
-    animation-duration: 1s;
-    animation-fill-mode: both;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.fadeIn {
-    animation-name: fadeIn;
+.card-title {
+    color: #007bff;
+    font-weight: 600;
 }
 
 .chart-container {
     width: 100%;
     height: 400px;
     margin-top: 30px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.form-group label {
+    font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -55,9 +61,9 @@ body {
 }
 </style>
 
-<div class="container mt-5 animated fadeIn">
+<div class="container animated fadeIn">
     <h2 class="text-center mb-4">Análise do Posto {{ posto.nome }}</h2>
-    <div class="card shadow-lg p-4">
+    <div class="card shadow-lg">
         <div class="card-body">
             <h3 class="card-title mb-4">Dados do Posto</h3>
             <p><strong>Nome:</strong> {{ posto.nome }}</p>
@@ -65,9 +71,25 @@ body {
             <p><strong>Cidade:</strong> {{ posto.cidade }}</p>
             <p><strong>Estado:</strong> {{ posto.estado }}</p>
             <hr>
+
+            <!-- Filtro de Data -->
+            <form method="get" action="">
+                <div class="form-group">
+                    <label for="data_inicio">Data Início:</label>
+                    <input type="date" id="data_inicio" name="data_inicio" class="form-control" value="{{ data_inicio }}">
+                </div>
+                <div class="form-group mt-2">
+                    <label for="data_fim">Data Fim:</label>
+                    <input type="date" id="data_fim" name="data_fim" class="form-control" value="{{ data_fim }}">
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
+            </form>
+            <hr>
+
             <h3 class="card-title mb-4">Vouchers Utilizados</h3>
             <p><strong>Total de Vouchers:</strong> {{ total_vouchers }}</p>
             <p><strong>Valor Total Utilizado:</strong> R$ {{ valor_total_utilizado }}</p>
+
             <div id="chartContainer" class="chart-container">
                 <canvas id="postoChart"></canvas>
             </div>
@@ -81,22 +103,39 @@ body {
 <script>
 document.addEventListener('DOMContentLoaded', (event) => {
     const ctx = document.getElementById('postoChart').getContext('2d');
+
+    // Dados do gráfico
+    const dataVouchers = {{ data_vouchers|safe }};  // Datas formatadas
+    const valoresGastos = {{ valores_gastos|safe }};  // Valores dos vouchers
+
     const postoChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
-            labels: ['Total de Vouchers', 'Valor Total Utilizado'],
+            labels: dataVouchers,  // Datas no eixo X
             datasets: [{
-                label: 'Estatísticas do Posto',
-                data: [{{ total_vouchers }}, {{ valor_total_utilizado }}],
-                backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-                borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                borderWidth: 1
+                label: 'Valor Gasto',
+                data: valoresGastos,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true
             }]
         },
         options: {
+            responsive: true,
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Data'
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Valor Gasto (R$)'
+                    }
                 }
             }
         }

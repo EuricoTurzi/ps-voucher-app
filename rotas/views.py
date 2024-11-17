@@ -13,7 +13,7 @@ def cadastrar_rota(request):
             rota = form.save(commit=False)
             rota.save()  # Salva a instância da rota para obter um ID
             form.save_m2m()  # Salva a relação ManyToMany após a rota ter sido salva
-            rota.valor_total = rota.postos.count() * 10  # Calcula o valor total com base nos postos
+            rota.valor_total = 40  # Calcula o valor total com base nos postos
             rota.save(update_fields=['valor_total'])  # Salva novamente para atualizar o valor total
             return redirect('listar_rotas')
     else:
@@ -36,7 +36,7 @@ def editar_rota(request, rota_id):
             rota = form.save(commit=False)
             rota.save()  # Salva a rota para obter um ID
             form.save_m2m()  # Salva a relação ManyToMany
-            rota.valor_total = rota.postos.count() * 10  # Calcula o valor total ao editar a rota
+            rota.valor_total = 40  # Calcula o valor total ao editar a rota
             rota.save(update_fields=['valor_total'])  # Salva novamente para atualizar o valor total
             return redirect('listar_rotas')
     else:

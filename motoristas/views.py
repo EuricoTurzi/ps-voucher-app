@@ -35,7 +35,6 @@ def cadastrar_motorista(request):
 @group_required('Administrador')
 def listar_motoristas(request):
     motoristas = Motorista.objects.all()
-    # Criar uma lista de motoristas com suas senhas
     motoristas_com_senhas = [(motorista, motorista_senhas.get(motorista.cpf, '')) for motorista in motoristas]
     return render(request, 'motoristas/listar_motoristas.html', {'motoristas_com_senhas': motoristas_com_senhas})
 
@@ -58,7 +57,7 @@ def login_view(request):
 @login_required
 def home_motorista(request):
     motorista = Motorista.objects.get(cpf=request.user.username)
-    vouchers = Voucher.objects.filter(motorista=motorista).exclude(status='Usado')
+    vouchers = Voucher.objects.filter(motorista=motorista).exclude(status__in=['Usado', 'Expirado'])
     return render(request, 'motoristas/home_motorista.html', {'motorista': motorista, 'vouchers': vouchers})
 
 def logout_view(request):

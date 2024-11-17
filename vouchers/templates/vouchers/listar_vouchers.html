@@ -72,10 +72,15 @@ body {
                     <thead class="thead-dark">
                         <tr>
                             <th>Motorista</th>
+                            {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
                             <th>Valor</th>
+                            {% endif %}
                             <th>Código</th>
+                            {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
                             <th>QR Code</th>
+                            {% endif %}
                             <th>Status</th>
+                            <th>Data de Criação</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -83,14 +88,17 @@ body {
                         {% for voucher in vouchers %}
                         <tr>
                             <td>{{ voucher.motorista.nome }}</td>
+                            {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
                             <td>R$ {{ voucher.valor_restante }}</td>
+                            {% endif %}
                             <td>{{ voucher.codigo }}</td>
+                            {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
                             <td>
-                                {% if request.user.is_superuser or request.user|has_group:"Administrador" %}
                                     <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#qrCodeModal-{{ voucher.id }}">Ver QR Code</button>
-                                {% endif %}
                             </td>
+                            {% endif %}
                             <td>{{ voucher.status }}</td>
+                            <td>{{ voucher.data_criacao|date:"d/m/Y H:i" }}</td>
                             <td>
                                 {% if request.user.is_superuser or request.user|has_group:"PA" %}
                                     <a class="btn btn-primary" href="{% url 'validar_voucher_view' %}">Validar</a>

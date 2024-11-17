@@ -4,6 +4,10 @@ from django.db import models
 from motoristas.models import Motorista
 from rotas.models import Rota
 from django.conf import settings
+from django.contrib.auth.models import User  # Para referenciar o usuário
+from datetime import timedelta
+from django.utils.timezone import now  # Importar `now` para lidar com datas no timezone do Django
+
 
 class Voucher(models.Model):
     motorista = models.ForeignKey(Motorista, on_delete=models.CASCADE)
@@ -12,7 +16,8 @@ class Voucher(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     qr_code = models.ImageField(upload_to='qrcodes/', blank=True, null=True)
     status = models.CharField(max_length=50, default='Pendente')
-    usado = models.BooleanField(default=False)
+    criado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # Novo campo
+    data_criacao = models.DateTimeField(auto_now_add=True)  # Novo campo
     
     def save(self, *args, **kwargs):
         if not self.qr_code:
@@ -21,6 +26,9 @@ class Voucher(models.Model):
         if not self.pk:  # Apenas na criação
             self.valor_restante = self.rota.valor_total
         super().save(*args, **kwargs)
+
+    def is_expired(self):
+        return self.status in ['Pendente', 'Ativo'] and now() > self.data_criacao + timedelta(hours=24)
 
     def _generate_unique_code(self):
         import uuid

@@ -84,10 +84,10 @@ WSGI_APPLICATION = 'ps_voucher.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'railway',
+        'NAME': 'ps-voucher',
         'USER': 'postgres',
-        'PASSWORD': 'rrtBHXaiqJjaifySbWWbnezrFxMnSbFM',
-        'HOST': 'postgres.railway.internal',
+        'PASSWORD': 'Euro@1998!',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
