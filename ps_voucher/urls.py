@@ -13,7 +13,7 @@ urlpatterns = [
     path('usuarios/', include('usuarios.urls')),
     path('analise_posto/', include('analise_posto.urls')),  # Adiciona o novo app de análise
     path('accounts/', include('django.contrib.auth.urls')),  # Adiciona URLs de autenticação padrão do Django
-    path('home/', TemplateView.as_view(template_name='home.html'), name='home'),  # Adiciona a URL da página inicial
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),  # Adiciona a URL da página inicial
 ]
 
 if settings.DEBUG or settings.SERVE_MEDIA_IN_PROD:
