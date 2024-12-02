@@ -28,7 +28,7 @@ class Voucher(models.Model):
         super().save(*args, **kwargs)
 
     def is_expired(self):
-        return self.status in ['Pendente', 'Ativo'] and now() > self.data_criacao + timedelta(hours=24)
+        return self.status in ['Pendente', 'Ativo'] and now() > self.data_criacao + timedelta(hours=48) #Alterado para 48 horas de duração
 
     def _generate_unique_code(self):
         import uuid
